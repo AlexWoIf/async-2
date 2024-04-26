@@ -2,7 +2,7 @@
 
 Это второй урок в курсе Девман "Асинхронный Python"
 
-![gameplay image](https://dvmn.org/media/lessons/ezgif-6-9ef2761efd97.gif)
+<img src="https://dvmn.org/media/lessons/ezgif-6-9ef2761efd97.gif" width="300">
 
 ### Как установить
 
