@@ -1,14 +1,14 @@
 import asyncio
 import curses
 import textwrap
-from cgitb import text
-from hmac import new
+import os
 from itertools import cycle, islice, chain
+from os.path import isfile, join
 from random import choice, randint, randrange
 from statistics import median
 
 import obstacles
-from constants import STARS_AMOUNT, STAR_CHARS, TIC_TIMEOUT, TIC_PER_YEAR
+from constants import GARBAGE_DIR, STARS_AMOUNT, STAR_CHARS, TIC_TIMEOUT, TIC_PER_YEAR
 from curses_tools import draw_frame, get_frame_size, read_controls
 from explosion import explode
 from game_scenario import PHRASES, get_garbage_delay_tics
@@ -180,6 +180,15 @@ def create_starset(max_row, max_col, num, symbols=['*']):
     return [(randint(1,max_row-2), randint(1, max_col-2), choice(symbols)) for
             _ in range(num)]
 
+def create_garbageset():
+    garbage_frames = []
+    files = [join(GARBAGE_DIR, f) for f in os.listdir(GARBAGE_DIR)
+             if isfile(join(GARBAGE_DIR, f))]
+    for filepath in files:
+        with open(filepath, "r") as garbage_file:
+            garbage_frames.append(garbage_file.read())
+    return garbage_frames
+
 
 def draw(canvas):
     curses.curs_set(False)
@@ -194,13 +203,7 @@ def draw(canvas):
         rocket_frame_1 = my_file.read()
     with open("files/rocket_frame_2.txt", 'r') as my_file:
         rocket_frame_2 = my_file.read()
-    garbage_frames = []
-    with open('files/trash_small.txt', "r") as garbage_file:
-        garbage_frames.append(garbage_file.read())
-    with open('files/trash_large.txt', "r") as garbage_file:
-        garbage_frames.append(garbage_file.read())
-    with open('files/trash_xl.txt', "r") as garbage_file:
-        garbage_frames.append(garbage_file.read())
+    garbage_frames = create_garbageset()
 
     stars = create_starset(max_row, max_col, STARS_AMOUNT, STAR_CHARS)
     for row, col, symbol in stars:
